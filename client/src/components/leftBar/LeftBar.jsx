@@ -10,7 +10,7 @@ import { MdOutlineExplore } from 'react-icons/md';
 import { RiDownloadCloudLine } from 'react-icons/ri';
 import { RiSettings5Fill } from 'react-icons/ri';
 import { IoPersonCircle } from 'react-icons/io5';
-import { GoTab } from 'react-icons/go';
+import { FaClockRotateLeft } from "react-icons/fa6";
 import { MdEventAvailable } from 'react-icons/md';
 import { GiShoppingBag } from 'react-icons/gi';
 import { MdOutlineChat } from 'react-icons/md';
@@ -210,7 +210,7 @@ const LeftBar = () => {
             onClick={()=>{manageLeft()}}
           >
             <div className="item" title={activity}>
-              <GoTab size={24} color="white"/>
+              <FaClockRotateLeft size={18} style={{marginLeft: "3px", marginRight: "1px"}} color="white"/>
               <span>Activity</span>
             </div>
           </Link> 

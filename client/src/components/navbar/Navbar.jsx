@@ -13,7 +13,7 @@ import { FaRegUser } from 'react-icons/fa';
 import Dropdown from "../dropdown/Dropdown";
 import { clickedOutside } from "../dropdown/Dropdown.jsx";
 import { FiSend } from 'react-icons/fi';
-import { GoTab } from 'react-icons/go'
+import { HiBars3 } from "react-icons/hi2";
 import moment from "moment";
 
 import { useLeftStore } from "../../activitiesStore";
@@ -247,7 +247,7 @@ const Navbar = ({mainBody, setMainBody, addActivity}) => {
       <div className="nav">
 
         <div className="left">
-          <GoTab onClick={()=>{handleClick2()}} fontSize={25} id="hamburger" style={{display: "block", marginRight: "15px"}}/>
+          <HiBars3 onClick={()=>{handleClick2()}} fontSize={29} id="hamburger" style={{display: "block", marginRight: "15px"}}/>
           <Link to="/" style={{ textDecoration: "none" }}>
             <span>inspire</span>
           </Link>
