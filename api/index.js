@@ -11,6 +11,14 @@ import cors from "cors";
 import multer from "multer";
 import path from "path";
 import url from "url";
+import AWS from 'aws-sdk';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -49,27 +57,60 @@ app.use(cors({
 //     res.status(200).json(file.filename)
 // })
 
-import { BlobServiceClient } from '@azure/storage-blob';
 
-const connectionString = 'DefaultEndpointsProtocol=https;AccountName=socialwebappblobs;AccountKey=CbOGUp77HogOKpCD45whk9hTgKphwik3KxDFM9OhKGD17G/m8QVyIlku/+/x/g1SUthYjTivPjUf+AStb480Fw==;EndpointSuffix=core.windows.net';
-const containerName = 'blobs';
 
-const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
-const containerClient = blobServiceClient.getContainerClient(containerName);
+
+
+// Old Azure blob storage
+// import { BlobServiceClient } from '@azure/storage-blob';
+
+// const connectionString = 'DefaultEndpointsProtocol=https;AccountName=socialwebappblobs;AccountKey=CbOGUp77HogOKpCD45whk9hTgKphwik3KxDFM9OhKGD17G/m8QVyIlku/+/x/g1SUthYjTivPjUf+AStb480Fw==;EndpointSuffix=core.windows.net';
+// const containerName = 'blobs';
+
+// const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+// const containerClient = blobServiceClient.getContainerClient(containerName);
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage });
+
+// app.post("/api/upload", upload.single("file"), async (req, res) => {
+//   try {
+//     const blobName = `${Date.now()}-${req.file.originalname}`;
+//     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+//     await blockBlobClient.uploadData(req.file.buffer, {
+//       blobHTTPHeaders: { blobContentType: req.file.mimetype },
+//     });
+
+//     const imageUrl = blockBlobClient.url;
+//     // Store the imageUrl in your database or use it as needed
+
+//     res.status(200).json({ imageUrl });
+//   } catch (error) {
+//     console.error('Error uploading image:', error);
+//     res.status(500).json({ error: 'Failed to upload image' });
+//   }
+// });
+
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 app.post("/api/upload", upload.single("file"), async (req, res) => {
+  console.log("Uploading to Database")
   try {
-    const blobName = `${Date.now()}-${req.file.originalname}`;
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    const blobName = `inspire-connect/${Date.now()}-${req.file.originalname}`;
+    const params = {
+      Bucket: 'aws1-bucket1-jg',
+      Key: blobName,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+      ACL: 'public-read',
+    };
 
-    await blockBlobClient.uploadData(req.file.buffer, {
-      blobHTTPHeaders: { blobContentType: req.file.mimetype },
-    });
+    await s3.upload(params).promise();
 
-    const imageUrl = blockBlobClient.url;
+    const imageUrl = `https://aws1-bucket1-jg.s3.amazonaws.com/${blobName}`;
     // Store the imageUrl in your database or use it as needed
 
     res.status(200).json({ imageUrl });

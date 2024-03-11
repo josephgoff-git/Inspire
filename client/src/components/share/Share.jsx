@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { UPLOAD_URL } from "../../config";
 // import { compressImage } from "../../compressImage.js"
+import ImageCompressor from 'image-compressor.js';
 
 export var filePost = "";
 export var fill = "";
@@ -67,14 +68,42 @@ const Share = ({addActivity}) => {
 
   const [titles, setTitles] = useState([addImage, location, tags])
 
-  const upload = async () => { 
+  // const upload = async () => { 
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("file", file);
+  //     const res = await makeRequest.post("/upload", formData);
+  //     return res.data;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  const upload = async () => {
     try {
+      // Create a new instance of ImageCompressor
+      const compressor = new ImageCompressor();
+  
+      // Compress the image file
+      const compressedFile = await compressor.compress(file, {
+        maxWidth: 1000, // Maximum width of the compressed image
+        maxHeight: 1000, // Maximum height of the compressed image
+        quality: 1, // Compression quality (0 to 1)
+        mimeType: 'image/jpeg', // Output MIME type
+      });
+  
+      // Create a new FormData object
       const formData = new FormData();
-      formData.append("file", file);
+      
+      // Append the compressed file to the FormData object
+      formData.append("file", compressedFile);
+  
+      // Make the upload request
       const res = await makeRequest.post("/upload", formData);
+      
+      // Return the response data
       return res.data;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
