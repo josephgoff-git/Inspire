@@ -59,7 +59,8 @@ const Register = ({addActivity}) => {
     coverPic: "1687901394006-cover.png",
     city: "USA",
     website: "",
-    ids: [1,2,3,4]
+    // ids: [1,2,3,4]
+    ids: []
   });
   
   const [err, setErr] = useState(null);
